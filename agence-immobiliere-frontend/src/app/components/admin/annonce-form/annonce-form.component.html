@@ -1,0 +1,122 @@
+<div class="card">
+  <div class="card-header">
+    <h2>{{ isEditMode ? 'Modifier l\'annonce' : 'Créer une nouvelle annonce' }}</h2>
+  </div>
+  <div class="card-body">
+    <form [formGroup]="annonceForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="titre" class="form-label">Titre*</label>
+          <input type="text" class="form-control" id="titre" formControlName="titre"
+                 [ngClass]="{ 'is-invalid': submitted && annonceForm.get('titre')?.errors }">
+          <div class="invalid-feedback" *ngIf="submitted && annonceForm.get('titre')?.errors">
+            <div *ngIf="annonceForm.get('titre')?.errors?.['required']">Le titre est requis</div>
+            <div *ngIf="annonceForm.get('titre')?.errors?.['minlength']">Le titre doit contenir au moins 5 caractères</div>
+          </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label for="localisation" class="form-label">Localisation*</label>
+          <input type="text" class="form-control" id="localisation" formControlName="localisation"
+                 [ngClass]="{ 'is-invalid': submitted && annonceForm.get('localisation')?.errors }">
+          <div class="invalid-feedback" *ngIf="submitted && annonceForm.get('localisation')?.errors?.['required']">
+            La localisation est requise
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label for="type" class="form-label">Type d'annonce*</label>
+          <select class="form-select" id="type" formControlName="type"
+                  [ngClass]="{ 'is-invalid': submitted && annonceForm.get('type')?.errors }">
+            <option value="">Sélectionner un type</option>
+            <option *ngFor="let type of typesOptions" [value]="type">
+              {{ type === 'vente' ? 'Vente' : 'Location' }}
+            </option>
+          </select>
+          <div class="invalid-feedback" *ngIf="submitted && annonceForm.get('type')?.errors?.['required']">
+            Le type est requis
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <label for="categorie" class="form-label">Catégorie*</label>
+          <select class="form-select" id="categorie" formControlName="categorie"
+                  (change)="onCategorieChange()"
+                  [ngClass]="{ 'is-invalid': submitted && annonceForm.get('categorie')?.errors }">
+            <option value="">Sélectionner une catégorie</option>
+            <option *ngFor="let categorie of categoriesOptions" [value]="categorie">
+              {{ categorie | titlecase }}
+            </option>
+          </select>
+          <div class="invalid-feedback" *ngIf="submitted && annonceForm.get('categorie')?.errors?.['required']">
+            La catégorie est requise
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <label for="prix" class="form-label">Prix*</label>
+          <input type="number" class="form-control" id="prix" formControlName="prix"
+                 [ngClass]="{ 'is-invalid': submitted && annonceForm.get('prix')?.errors }">
+          <div class="invalid-feedback" *ngIf="submitted && annonceForm.get('prix')?.errors">
+            <div *ngIf="annonceForm.get('prix')?.errors?.['required']">Le prix est requis</div>
+            <div *ngIf="annonceForm.get('prix')?.errors?.['min']">Le prix doit être positif</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="superficie" class="form-label">Superficie (m²)*</label>
+          <input type="number" class="form-control" id="superficie" formControlName="superficie"
+                 [ngClass]="{ 'is-invalid': submitted && annonceForm.get('superficie')?.errors }">
+          <div class="invalid-feedback" *ngIf="submitted && annonceForm.get('superficie')?.errors">
+            <div *ngIf="annonceForm.get('superficie')?.errors?.['required']">La superficie est requise</div>
+            <div *ngIf="annonceForm.get('superficie')?.errors?.['min']">La superficie doit être positive</div>
+          </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label for="nombrePieces" class="form-label">Nombre de pièces</label>
+          <input type="number" class="form-control" id="nombrePieces" formControlName="nombrePieces">
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="photos" class="form-label">Photos (URLs séparées par des virgules)</label>
+        <input type="text" class="form-control" id="photos" formControlName="photos">
+      </div>
+
+      <div class="mb-3">
+        <label for="description" class="form-label">Description*</label>
+        <textarea class="form-control" id="description" rows="4" formControlName="description"
+                  [ngClass]="{ 'is-invalid': submitted && annonceForm.get('description')?.errors }"></textarea>
+        <div class="invalid-feedback" *ngIf="submitted && annonceForm.get('description')?.errors">
+          <div *ngIf="annonceForm.get('description')?.errors?.['required']">La description est requise</div>
+          <div *ngIf="annonceForm.get('description')?.errors?.['minlength']">
+            La description doit contenir au moins 20 caractères
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="contact" class="form-label">Email de contact*</label>
+        <input type="email" class="form-control" id="contact" formControlName="contact"
+               [ngClass]="{ 'is-invalid': submitted && annonceForm.get('contact')?.errors }">
+        <div class="invalid-feedback" *ngIf="submitted && annonceForm.get('contact')?.errors">
+          <div *ngIf="annonceForm.get('contact')?.errors?.['required']">L'email est requis</div>
+          <div *ngIf="annonceForm.get('contact')?.errors?.['email']">L'email n'est pas valide</div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <button type="button" class="btn btn-secondary" routerLink="/admin/annonces">Annuler</button>
+        <button type="submit" class="btn btn-primary" [disabled]="loading">
+          <span *ngIf="loading" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+          {{ isEditMode ? 'Mettre à jour' : 'Créer l\'annonce' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

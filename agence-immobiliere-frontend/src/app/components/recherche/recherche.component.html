@@ -1,0 +1,129 @@
+<!-- Search Form -->
+
+<div class="card mb-4">
+  <div class="card-header">
+    <h2>Recherche avancée</h2>
+  </div>
+  <div class="card-body">
+    <form [formGroup]="rechercheForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <label for="type" class="form-label">Type d'annonce</label>
+          <select class="form-select" id="type" formControlName="type">
+            <option value="">Tous</option>
+            <option value="vente">Vente</option>
+            <option value="location">Location</option>
+          </select>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <label for="categorie" class="form-label">Catégorie</label>
+          <select class="form-select" id="categorie" formControlName="categorie">
+            <option value="">Toutes</option>
+            <option value="appartement">Appartement</option>
+            <option value="maison">Maison</option>
+            <option value="terrain">Terrain</option>
+            <option value="commerce">Commerce</option>
+          </select>
+        </div>
+
+        <div class="col-md-4 mb-3">
+          <label for="localisation" class="form-label">Localisation</label>
+          <input type="text" class="form-control" id="localisation" formControlName="localisation">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-3 mb-3">
+          <label for="prixMin" class="form-label">Prix minimum</label>
+          <input type="number" class="form-control" id="prixMin" formControlName="prixMin">
+        </div>
+
+        <div class="col-md-3 mb-3">
+          <label for="prixMax" class="form-label">Prix maximum</label>
+          <input type="number" class="form-control" id="prixMax" formControlName="prixMax">
+        </div>
+
+        <div class="col-md-3 mb-3">
+          <label for="superficieMin" class="form-label">Surface min. (m²)</label>
+          <input type="number" class="form-control" id="superficieMin" formControlName="superficieMin">
+        </div>
+
+        <div class="col-md-3 mb-3">
+          <label for="superficieMax" class="form-label">Surface max. (m²)</label>
+          <input type="number" class="form-control" id="superficieMax" formControlName="superficieMax">
+        </div>
+      </div>
+
+      <div class="row" *ngIf="rechercheForm.get('categorie')?.value !== 'terrain'">
+        <div class="col-md-6 mb-3">
+          <label for="nombrePiecesMin" class="form-label">Nombre de pièces min.</label>
+          <input type="number" class="form-control" id="nombrePiecesMin" formControlName="nombrePiecesMin">
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label for="nombrePiecesMax" class="form-label">Nombre de pièces max.</label>
+          <input type="number" class="form-control" id="nombrePiecesMax" formControlName="nombrePiecesMax">
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <button type="button" class="btn btn-secondary" (click)="resetForm()">Réinitialiser</button>
+        <button type="submit" class="btn btn-primary">Rechercher</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div *ngIf="resultatsRecherche.length > 0">
+  <h2 class="mb-4">Résultats de recherche ({{ resultatsRecherche.length }})</h2>
+
+  <div class="row">
+    <div class="col-12" *ngFor="let annonce of resultatsRecherche">
+      <div class="card mb-3">
+        <div class="row g-0">
+          <!-- Image column -->
+          <div class="col-md-4">
+            <img *ngIf="annonce.photos && annonce.photos.length"
+                 [src]="annonce.photos[0]"
+                 class="img-fluid rounded-start"
+                 [alt]="annonce.titre"
+                 style="height: 100%; object-fit: cover;">
+          </div>
+          <!-- Content column -->
+          <div class="col-md-8">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start">
+                <h5 class="card-title">{{ annonce.titre }}</h5>
+                <h4 class="text-primary">{{ annonce.prix | currency:'EUR' }}</h4>
+              </div>
+              <p class="card-text">
+                <span class="badge" [ngClass]="annonce.type === 'vente' ? 'bg-success' : 'bg-info'">
+                  {{ annonce.type === 'vente' ? 'À vendre' : 'À louer' }}
+                </span>
+                <span class="badge bg-secondary ms-2">{{ annonce.categorie | titlecase }}</span>
+              </p>
+              <p class="card-text">
+                <i class="bi bi-geo-alt"></i> {{ annonce.localisation }} |
+                <i class="bi bi-arrows-angle-expand"></i> {{ annonce.superficie }} m² |
+                <span *ngIf="annonce.nombrePieces">
+                  <i class="bi bi-house-door"></i> {{ annonce.nombrePieces }} pièces
+                </span>
+              </p>
+              <p class="card-text text-muted">{{ annonce.description | slice:0:150 }}...</p>
+              <div class="d-flex justify-content-end">
+                <a [routerLink]="['/annonces', annonce.id]" class="btn btn-outline-primary">
+                  Voir détails
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="rechercheSoumise && resultatsRecherche.length === 0" class="alert alert-info mt-4">
+    Aucune annonce ne correspond à vos critères de recherche.
+  </div>
+</div>

@@ -1,0 +1,39 @@
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        <h3 class="mb-0">Connexion administration</h3>
+      </div>
+      <div class="card-body">
+        <div *ngIf="error" class="alert alert-danger">
+          {{ error }}
+        </div>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <div class="mb-3">
+            <label for="username" class="form-label">Nom d'utilisateur</label>
+            <input type="text" class="form-control" id="username" formControlName="username">
+            <div *ngIf="f['username'].touched && f['username'].invalid" class="text-danger">
+              <small *ngIf="f['username'].errors?.['required']">Le nom d'utilisateur est obligatoire.</small>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="password" class="form-label">Mot de passe</label>
+            <input type="password" class="form-control" id="password" formControlName="password">
+            <div *ngIf="f['password'].touched && f['password'].invalid" class="text-danger">
+              <small *ngIf="f['password'].errors?.['required']">Le mot de passe est obligatoire.</small>
+            </div>
+          </div>
+
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary" [disabled]="loading || loginForm.invalid">
+              <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              Connexion
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

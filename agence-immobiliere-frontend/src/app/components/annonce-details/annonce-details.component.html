@@ -1,0 +1,102 @@
+<div *ngIf="annonce" class="annonce-details">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a routerLink="/">Accueil</a></li>
+      <li class="breadcrumb-item"><a routerLink="/annonces">Annonces</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{ annonce.titre }}</li>
+    </ol>
+  </nav>
+
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <h1>{{ annonce.titre }}</h1>
+      <p class="text-muted">
+        {{ annonce.localisation }} - Publié le {{ annonce.datePublication | date:'dd/MM/yyyy' }}
+      </p>
+    </div>
+    <div class="col-md-4 text-md-end">
+      <h2 class="text-primary">{{ annonce.prix | currency:'EUR' }}</h2>
+      <span class="badge" [ngClass]="annonce.type === 'vente' ? 'bg-success' : 'bg-info'">
+        {{ annonce.type === 'vente' ? 'À vendre' : 'À louer' }}
+      </span>
+      <span class="badge bg-secondary ms-2">{{ annonce.categorie | titlecase }}</span>
+    </div>
+  </div>
+
+  <!-- Carousel de photos -->
+  <div id="annonceCarousel" class="carousel slide mb-4" data-bs-ride="carousel" *ngIf="annonce.photos && annonce.photos.length">
+    <div class="carousel-inner">
+      <div *ngFor="let photo of annonce.photos; let i = index" [class]="'carousel-item ' + (i === 0 ? 'active' : '')">
+        <img [src]="photo" class="d-block w-100" alt="Photo {{ i+1 }}" style="height: 400px; object-fit: cover;">
+      </div>
+    </div>
+    <button *ngIf="annonce.photos.length > 1" class="carousel-control-prev" type="button" data-bs-target="#annonceCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button *ngIf="annonce.photos.length > 1" class="carousel-control-next" type="button" data-bs-target="#annonceCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h3>Description</h3>
+        </div>
+        <div class="card-body">
+          <p>{{ annonce.description }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h3>Caractéristiques</h3>
+        </div>
+        <div class="card-body">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between">
+              <span>Superficie</span>
+              <strong>{{ annonce.superficie }} m²</strong>
+            </li>
+            <li class="list-group-item d-flex justify-content-between" *ngIf="annonce.nombrePieces">
+              <span>Nombre de pièces</span>
+              <strong>{{ annonce.nombrePieces }}</strong>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+              <span>Type de bien</span>
+              <strong>{{ annonce.categorie | titlecase }}</strong>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+              <span>Type d'annonce</span>
+              <strong>{{ annonce.type === 'vente' ? 'Vente' : 'Location' }}</strong>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card-header">
+          <h3>Contact</h3>
+        </div>
+        <div class="card-body">
+          <p><i class="bi bi-envelope"></i> {{ annonce.contact }}</p>
+          <button class="btn btn-primary w-100">Contacter l'agence</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!annonce && !loading" class="alert alert-danger">
+  L'annonce demandée n'existe pas.
+</div>
+
+<div *ngIf="loading" class="text-center my-5">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Chargement...</span>
+  </div>
+</div>

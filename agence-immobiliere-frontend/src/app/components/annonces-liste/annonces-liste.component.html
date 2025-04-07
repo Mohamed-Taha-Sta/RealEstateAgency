@@ -1,0 +1,44 @@
+<h1 class="mb-4">Catalogue des annonces immobilières</h1>
+
+<div class="row mb-4">
+  <div class="col-md-6">
+    <div class="btn-group" role="group">
+      <button type="button" class="btn" [ngClass]="{'btn-primary': typeFiltre === 'tous', 'btn-outline-primary': typeFiltre !== 'tous'}" (click)="filtrerParType('tous')">Tous</button>
+      <button type="button" class="btn" [ngClass]="{'btn-primary': typeFiltre === 'vente', 'btn-outline-primary': typeFiltre !== 'vente'}" (click)="filtrerParType('vente')">Vente</button>
+      <button type="button" class="btn" [ngClass]="{'btn-primary': typeFiltre === 'location', 'btn-outline-primary': typeFiltre !== 'location'}" (click)="filtrerParType('location')">Location</button>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="btn-group" role="group">
+      <button type="button" class="btn" [ngClass]="{'btn-primary': categorieFiltre === 'tous', 'btn-outline-primary': categorieFiltre !== 'tous'}" (click)="filtrerParCategorie('tous')">Tous</button>
+      <button type="button" class="btn" [ngClass]="{'btn-primary': categorieFiltre === 'maison', 'btn-outline-primary': categorieFiltre !== 'maison'}" (click)="filtrerParCategorie('maison')">Maisons</button>
+      <button type="button" class="btn" [ngClass]="{'btn-primary': categorieFiltre === 'terrain', 'btn-outline-primary': categorieFiltre !== 'terrain'}" (click)="filtrerParCategorie('terrain')">Terrains</button>
+    </div>
+  </div>
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+  <div class="col" *ngFor="let annonce of annoncesFiltrees">
+    <div class="card h-100">
+      <img *ngIf="annonce.photos && annonce.photos.length" [src]="annonce.photos[0]" class="card-img-top" alt="Photo du bien" style="height: 200px; object-fit: cover;">
+      <div class="card-body">
+        <h5 class="card-title">{{ annonce.titre }}</h5>
+        <p class="card-text">
+          <span class="badge" [ngClass]="annonce.type === 'vente' ? 'bg-success' : 'bg-info'">{{ annonce.type === 'vente' ? 'À vendre' : 'À louer' }}</span>
+          <span class="ms-2">{{ annonce.prix | currency:'EUR' }}</span>
+        </p>
+        <p class="card-text">{{ annonce.localisation }} - {{ annonce.superficie }} m² -
+          <span *ngIf="annonce.nombrePieces">{{ annonce.nombrePieces }} pièces</span>
+        </p>
+        <p class="card-text">{{ annonce.description | slice:0:100 }}...</p>
+      </div>
+      <div class="card-footer">
+        <a [routerLink]="['/annonces', annonce.id]" class="btn btn-sm btn-outline-primary">Voir détails</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="annoncesFiltrees.length === 0" class="alert alert-info mt-4">
+  Aucune annonce ne correspond à vos critères.
+</div>

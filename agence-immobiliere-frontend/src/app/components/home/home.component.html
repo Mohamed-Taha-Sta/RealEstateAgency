@@ -1,0 +1,41 @@
+<div class="jumbotron bg-light p-5 rounded">
+  <h1 class="display-4">Bienvenue sur notre agence immobilière</h1>
+  <p class="lead">Trouvez la maison de vos rêves ou le terrain idéal pour votre projet.</p>
+  <hr class="my-4">
+  <p>Découvrez notre sélection d'annonces immobilières pour l'achat ou la location.</p>
+  <a class="btn btn-primary btn-lg" routerLink="/annonces" role="button">Voir les annonces</a>
+</div>
+
+<h2 class="mt-5 mb-4">Nos dernières annonces</h2>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+  <div class="col" *ngFor="let annonce of dernieresAnnonces">
+    <div class="card h-100">
+      <img *ngIf="annonce.photos && annonce.photos.length" [src]="annonce.photos[0]" class="card-img-top" alt="Photo du bien" style="height: 200px; object-fit: cover;">
+      <div class="card-body">
+        <h5 class="card-title">{{ annonce.titre }}</h5>
+        <p class="card-text">
+          <span class="badge" [ngClass]="annonce.type === 'vente' ? 'bg-success' : 'bg-info'">{{ annonce.type === 'vente' ? 'À vendre' : 'À louer' }}</span>
+          <span class="ms-2">{{ annonce.prix | currency:'EUR' }}</span>
+        </p>
+        <p class="card-text">{{ annonce.localisation }} - {{ annonce.superficie }} m² -
+          <span *ngIf="annonce.nombrePieces">{{ annonce.nombrePieces }} pièces</span>
+        </p>
+        <p class="card-text">{{ annonce.description | slice:0:100 }}...</p>
+      </div>
+      <div class="card-footer">
+        <a [routerLink]="['/annonces', annonce.id]" class="btn btn-sm btn-outline-primary">Voir détails</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="text-center mt-4">
+  <a routerLink="/annonces" class="btn btn-outline-primary">Voir toutes les annonces</a>
+</div>
+
+<div class="mt-5">
+  <h2>Rechercher un bien</h2>
+  <p>Utilisez notre outil de recherche pour trouver le bien immobilier qui correspond à vos critères.</p>
+  <a routerLink="/recherche" class="btn btn-secondary">Recherche avancée</a>
+</div>
