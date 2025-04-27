@@ -84,8 +84,36 @@
       </div>
 
       <div class="mb-3">
-        <label for="photos" class="form-label">Photos (URLs séparées par des virgules)</label>
-        <input type="text" class="form-control" id="photos" formControlName="photos">
+        <label for="photos" class="form-label">Photos</label>
+        <input type="file" class="form-control" id="photos" multiple (change)="onFileSelected($event)" accept="image/*">
+
+        <div class="mt-2" *ngIf="selectedFiles.length > 0">
+          <h6>Fichiers sélectionnés ({{ selectedFiles.length }}):</h6>
+          <ul class="list-group">
+            <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let file of selectedFiles; let i = index">
+              {{ file.name }}
+              <button type="button" class="btn btn-sm btn-danger" (click)="removeFile(i)">
+                Supprimer
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        <div class="mt-2" *ngIf="existingPhotos && existingPhotos.length > 0">
+          <h6>Photos existantes:</h6>
+          <div class="row">
+            <div class="col-md-4 mb-2" *ngFor="let photo of existingPhotos; let i = index">
+              <div class="card">
+                <img [src]="photo" class="card-img-top" alt="Property photo" style="height: 150px; object-fit: cover;">
+                <div class="card-body p-2">
+                  <button type="button" class="btn btn-sm btn-danger w-100" (click)="removeExistingPhoto(i)">
+                    Supprimer
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="mb-3">

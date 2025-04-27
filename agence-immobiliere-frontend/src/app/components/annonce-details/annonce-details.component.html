@@ -24,20 +24,63 @@
   </div>
 
   <!-- Carousel de photos -->
-  <div id="annonceCarousel" class="carousel slide mb-4" data-bs-ride="carousel" *ngIf="annonce.photos && annonce.photos.length">
-    <div class="carousel-inner">
-      <div *ngFor="let photo of annonce.photos; let i = index" [class]="'carousel-item ' + (i === 0 ? 'active' : '')">
-        <img [src]="photo" class="d-block w-100" alt="Photo {{ i+1 }}" style="height: 400px; object-fit: cover;">
+  <div class="property-photos mt-4">
+    <h3>Photos</h3>
+
+    <ng-container *ngIf="annonce.photos">
+      <div *ngIf="annonce.photos.length > 0" class="photo-gallery">
+        <div id="propertyCarousel" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-inner">
+            <div *ngFor="let photo of annonce.photos; let i = index"
+                 class="carousel-item"
+                 [ngClass]="{'active': i === 0}">
+              <img [src]="photo" class="d-block w-100" alt="Property photo" style="height: 400px; object-fit: cover;">
+            </div>
+          </div>
+
+          <button class="carousel-control-prev" type="button" data-bs-target="#propertyCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+
+          <button class="carousel-control-next" type="button" data-bs-target="#propertyCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+
+          <div class="carousel-indicators">
+            <button *ngFor="let photo of annonce.photos; let i = index"
+                    type="button"
+                    data-bs-target="#propertyCarousel"
+                    [attr.data-bs-slide-to]="i"
+                    [ngClass]="{'active': i === 0}"
+                    aria-current="true"
+                    [attr.aria-label]="'Slide ' + (i + 1)">
+            </button>
+          </div>
+        </div>
+
+        <!-- Thumbnail navigation -->
+        <div class="row mt-2">
+          <div *ngFor="let photo of annonce.photos; let i = index" class="col-md-2 mb-2">
+            <img [src]="photo"
+                 class="img-thumbnail"
+                 alt="Thumbnail"
+                 style="height: 80px; object-fit: cover; cursor: pointer;"
+                 data-bs-target="#propertyCarousel"
+                 [attr.data-bs-slide-to]="i">
+          </div>
+        </div>
       </div>
+
+      <div *ngIf="annonce.photos.length === 0" class="text-center p-5 bg-light">
+        <p>Aucune photo disponible pour ce bien.</p>
+      </div>
+    </ng-container>
+
+    <div *ngIf="!annonce.photos" class="text-center p-5 bg-light">
+      <p>Aucune photo disponible pour ce bien.</p>
     </div>
-    <button *ngIf="annonce.photos.length > 1" class="carousel-control-prev" type="button" data-bs-target="#annonceCarousel" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Previous</span>
-    </button>
-    <button *ngIf="annonce.photos.length > 1" class="carousel-control-next" type="button" data-bs-target="#annonceCarousel" data-bs-slide="next">
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Next</span>
-    </button>
   </div>
 
   <div class="row">

@@ -8,7 +8,7 @@ export interface Annonce {
   localisation: string;
   prix: number;
   description: string;
-  photos: string[];
+  photos?: string[];
   contact: string;
   datePublication: Date;
 }
