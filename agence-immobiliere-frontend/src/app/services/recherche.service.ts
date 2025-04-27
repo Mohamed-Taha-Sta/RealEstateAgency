@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {Annonce} from '../models/annonce';
-import {AnnonceService} from './annonce.service';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Annonce } from '../models/annonce';
 
 export interface RechercheParams {
   type?: 'vente' | 'location';
@@ -20,59 +20,50 @@ export interface RechercheParams {
   providedIn: 'root'
 })
 export class RechercheService {
+  private apiUrl = 'http://localhost:8080/api/annonces/public/search';
 
-  constructor(private annonceService: AnnonceService) {
-  }
+  constructor(private http: HttpClient) {}
 
   rechercherAnnonces(params: RechercheParams): Observable<Annonce[]> {
-    return this.annonceService.getAnnonces()
-      .pipe(
-        map(annonces => this.filtrerAnnonces(annonces, params))
-      );
+    // Convert frontend search params to backend search criteria
+    const searchCriteria = {
+      title: null,
+      location: params.localisation,
+      minPrice: params.prixMin,
+      maxPrice: params.prixMax,
+      minArea: params.superficieMin,
+      maxArea: params.superficieMax,
+      minRooms: params.nombrePiecesMin,
+      maxRooms: params.nombrePiecesMax,
+      type: params.categorie === 'maison' ? 'HOUSE' : params.categorie === 'terrain' ? 'LAND' : null,
+      listingType: params.type === 'vente' ? 'SALE' : params.type === 'location' ? 'RENTAL' : null
+    };
+
+    return this.http.post<any[]>(this.apiUrl, searchCriteria).pipe(
+      map(properties => this.mapPropertiesToAnnonces(properties))
+    );
   }
 
-  private filtrerAnnonces(annonces: Annonce[], params: RechercheParams): Annonce[] {
-    return annonces.filter(annonce => {
-      // Filtrer par type
-      if (params.type && annonce.type !== params.type) {
-        return false;
-      }
+  // Map backend PropertyDTO to frontend Annonce
+  private mapPropertyToAnnonce(property: any): Annonce {
+    return {
+      id: property.id,
+      titre: property.title,
+      type: property.listingType === 'SALE' ? 'vente' : 'location',
+      categorie: property.type === 'HOUSE' ? 'maison' : 'terrain',
+      superficie: property.area,
+      nombrePieces: property.rooms,
+      localisation: property.location,
+      prix: property.price,
+      description: property.description,
+      photos: property.photos?.map((photo: any) => photo.url) || [],
+      contact: property.contact,
+      datePublication: new Date(property.publicationDate)
+    };
+  }
 
-      // Filtrer par catégorie
-      if (params.categorie && annonce.categorie !== params.categorie) {
-        return false;
-      }
-
-      // Filtrer par localisation
-      if (params.localisation && !annonce.localisation.toLowerCase().includes(params.localisation.toLowerCase())) {
-        return false;
-      }
-
-      // Filtrer par prix
-      if (params.prixMin && annonce.prix < params.prixMin) {
-        return false;
-      }
-      if (params.prixMax && annonce.prix > params.prixMax) {
-        return false;
-      }
-
-      // Filtrer par superficie
-      if (params.superficieMin && annonce.superficie < params.superficieMin) {
-        return false;
-      }
-      if (params.superficieMax && annonce.superficie > params.superficieMax) {
-        return false;
-      }
-
-      // Filtrer par nombre de pièces
-      if (params.nombrePiecesMin && annonce.nombrePieces && annonce.nombrePieces < params.nombrePiecesMin) {
-        return false;
-      }
-      if (params.nombrePiecesMax && annonce.nombrePieces && annonce.nombrePieces > params.nombrePiecesMax) {
-        return false;
-      }
-
-      return true;
-    });
+  // Map an array of properties to an array of annonces
+  private mapPropertiesToAnnonces(properties: any[]): Annonce[] {
+    return properties.map(property => this.mapPropertyToAnnonce(property));
   }
 }
