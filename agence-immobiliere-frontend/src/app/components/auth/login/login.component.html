@@ -1,39 +1,107 @@
-<div class="row justify-content-center">
-  <div class="col-md-6">
-    <div class="card">
-      <div class="card-header bg-primary text-white">
-        <h3 class="mb-0">Connexion administration</h3>
+<!-- Enhanced Login Page -->
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-5 col-md-8">
+      <!-- Logo Section -->
+      <div class="text-center mb-4">
+        <i class="bi bi-building text-primary" style="font-size: 3rem;"></i>
+        <h1 class="h2 mt-2">Espace Administration</h1>
+        <p class="text-muted">Connectez-vous pour gérer vos annonces</p>
       </div>
-      <div class="card-body">
-        <div *ngIf="error" class="alert alert-danger">
-          {{ error }}
+
+      <!-- Login Card -->
+      <div class="card border-0 shadow-lg rounded-3">
+        <div class="card-header bg-primary text-white py-3">
+          <h3 class="mb-0 text-center">Connexion</h3>
         </div>
+        <div class="card-body p-4 p-lg-5">
+          <!-- Alert for errors -->
+          <div *ngIf="error" class="alert alert-danger d-flex align-items-center" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <div>{{ error }}</div>
+          </div>
 
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-          <div class="mb-3">
-            <label for="username" class="form-label">Nom d'utilisateur</label>
-            <input type="text" class="form-control" id="username" formControlName="username">
-            <div *ngIf="f['username'].touched && f['username'].invalid" class="text-danger">
-              <small *ngIf="f['username'].errors?.['required']">Le nom d'utilisateur est obligatoire.</small>
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <!-- Username field -->
+            <div class="form-floating mb-4">
+              <input
+                type="text"
+                class="form-control"
+                id="username"
+                formControlName="username"
+                placeholder="salah@gmail.com"
+                [ngClass]="{'is-invalid': f['username'].touched && f['username'].invalid}">
+              <label for="username">Email</label>
+              <div *ngIf="f['username'].touched && f['username'].invalid" class="invalid-feedback">
+                <div *ngIf="f['username'].errors?.['required']">Le nom d'utilisateur est obligatoire.</div>
+              </div>
             </div>
-          </div>
 
-          <div class="mb-3">
-            <label for="password" class="form-label">Mot de passe</label>
-            <input type="password" class="form-control" id="password" formControlName="password">
-            <div *ngIf="f['password'].touched && f['password'].invalid" class="text-danger">
-              <small *ngIf="f['password'].errors?.['required']">Le mot de passe est obligatoire.</small>
+            <!-- Password field -->
+            <div class="form-floating mb-4">
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                formControlName="password"
+                placeholder="Mot de passe"
+                [ngClass]="{'is-invalid': f['password'].touched && f['password'].invalid}">
+              <label for="password">Mot de passe</label>
+              <div *ngIf="f['password'].touched && f['password'].invalid" class="invalid-feedback">
+                <div *ngIf="f['password'].errors?.['required']">Le mot de passe est obligatoire.</div>
+              </div>
             </div>
-          </div>
 
-          <div class="d-grid gap-2">
-            <button type="submit" class="btn btn-primary" [disabled]="loading || loginForm.invalid">
-              <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-              Connexion
-            </button>
-          </div>
-        </form>
+            <!-- Submit button -->
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary btn-lg" [disabled]="loading || loginForm.invalid">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                <i *ngIf="!loading" class="bi bi-box-arrow-in-right me-2"></i>
+                Connexion
+              </button>
+            </div>
+
+            <!-- Forgot password link -->
+            <div class="text-center mt-4">
+              <a href="#" class="text-decoration-none">Mot de passe oublié ?</a>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Back to website link -->
+      <div class="text-center mt-4">
+        <a routerLink="/" class="btn btn-link text-decoration-none">
+          <i class="bi bi-arrow-left me-1"></i>Retour au site
+        </a>
       </div>
     </div>
   </div>
 </div>
+
+<!-- Custom CSS for animated effects -->
+<style>
+  .card {
+    transition: all 0.3s ease;
+  }
+
+  .form-control:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  }
+
+  .btn-primary {
+    transition: all 0.2s ease;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Page background with subtle pattern */
+  body {
+    background-color: #f8f9fa;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23e9ecef' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+</style>

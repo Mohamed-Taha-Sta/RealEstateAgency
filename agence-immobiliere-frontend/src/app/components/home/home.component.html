@@ -1,41 +1,214 @@
-<div class="jumbotron bg-light p-5 rounded">
-  <h1 class="display-4">Bienvenue sur notre agence immobilière</h1>
-  <p class="lead">Trouvez la maison de vos rêves ou le terrain idéal pour votre projet.</p>
-  <hr class="my-4">
-  <p>Découvrez notre sélection d'annonces immobilières pour l'achat ou la location.</p>
-  <a class="btn btn-primary btn-lg" routerLink="/annonces" role="button">Voir les annonces</a>
-</div>
-
-<h2 class="mt-5 mb-4">Nos dernières annonces</h2>
-
-<div class="row row-cols-1 row-cols-md-3 g-4">
-  <div class="col" *ngFor="let annonce of dernieresAnnonces">
-    <div class="card h-100">
-      <img *ngIf="annonce.photos && annonce.photos.length" [src]="annonce.photos[0].url" class="card-img-top" alt="Photo du bien" style="height: 200px; object-fit: cover;">
-      <div class="card-body">
-        <h5 class="card-title">{{ annonce.titre }}</h5>
-        <p class="card-text">
-          <span class="badge" [ngClass]="annonce.type === 'vente' ? 'bg-success' : 'bg-info'">{{ annonce.type === 'vente' ? 'À vendre' : 'À louer' }}</span>
-          <span class="ms-2">{{ annonce.prix | currency:'EUR' }}</span>
-        </p>
-        <p class="card-text">{{ annonce.localisation }} - {{ annonce.superficie }} m² -
-          <span *ngIf="annonce.nombrePieces">{{ annonce.nombrePieces }} pièces</span>
-        </p>
-        <p class="card-text">{{ annonce.description | slice:0:100 }}...</p>
+<!-- Enhanced Homepage -->
+<div class="container-fluid p-0">
+  <!-- Hero Section with Background Image -->
+  <div class="position-relative">
+    <div class="hero-image" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1973&q=80'); height: 600px; background-size: cover; background-position: center; display: flex; align-items: center;">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-7 text-white">
+            <h1 class="display-3 fw-bold mb-4">Trouvez le bien de vos rêves</h1>
+            <p class="lead fs-4 mb-4">Une sélection exclusive de biens immobiliers de qualité pour habiter ou investir</p>
+            <div class="d-flex gap-3">
+              <a class="btn btn-primary btn-lg" routerLink="/annonces" role="button">
+                <i class="bi bi-search me-2"></i>Découvrir nos biens
+              </a>
+              <a class="btn btn-outline-light btn-lg" routerLink="/recherche" role="button">
+                <i class="bi bi-envelope me-2"></i>Votre Futur Abode
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="card-footer">
-        <a [routerLink]="['/annonces', annonce.id]" class="btn btn-sm btn-outline-primary">Voir détails</a>
+    </div>
+  </div>
+
+  <div class="container my-5">
+
+    <!-- Featured Properties -->
+    <h2 class="display-6 mb-4 position-relative pb-2">
+      Nos biens à la une
+      <span class="position-absolute start-0 bottom-0 bg-primary" style="height: 4px; width: 80px;"></span>
+    </h2>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+      <div class="col" *ngFor="let annonce of dernieresAnnonces">
+        <div class="card h-100 shadow-sm hover-effect">
+          <div class="position-relative">
+            <img *ngIf="annonce.photos && annonce.photos.length" [src]="annonce.photos[0].url" class="card-img-top" alt="Photo du bien" style="height: 250px; object-fit: cover;">
+            <span class="badge position-absolute top-0 end-0 m-3" [ngClass]="annonce.type === 'vente' ? 'bg-success' : 'bg-info'">
+              {{ annonce.type === 'vente' ? 'À vendre' : 'À louer' }}
+            </span>
+            <div class="position-absolute bottom-0 start-0 mb-3 ms-3">
+              <span class="badge bg-dark fs-5">{{ annonce.prix | currency:'EUR' }}</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">{{ annonce.titre }}</h5>
+            <p class="card-text text-muted">
+              <i class="bi bi-geo-alt me-1"></i>{{ annonce.localisation }}
+            </p>
+            <div class="d-flex justify-content-between mb-3">
+              <span><i class="bi bi-rulers me-1"></i>{{ annonce.superficie }} m²</span>
+              <span *ngIf="annonce.nombrePieces"><i class="bi bi-house-door me-1"></i>{{ annonce.nombrePieces }} pièces</span>
+              <span><i class="bi bi-tag me-1"></i>{{ annonce.categorie | titlecase }}</span>
+            </div>
+            <p class="card-text">{{ annonce.description | slice:0:80 }}...</p>
+          </div>
+          <div class="card-footer bg-white border-0">
+            <a [routerLink]="['/annonces', annonce.id]" class="btn btn-outline-primary w-100">
+              <i class="bi bi-eye me-2"></i>Voir détails
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mb-5">
+      <a routerLink="/annonces" class="btn btn-lg btn-outline-primary">Voir toutes nos annonces</a>
+    </div>
+
+    <!-- Services Section -->
+    <div class="row mb-5 pt-3">
+      <div class="col-12 text-center mb-4">
+        <h2 class="display-6 mb-3">Nos services immobiliers</h2>
+        <p class="lead text-muted">Des professionnels à votre service pour tous vos projets</p>
+      </div>
+
+      <div class="col-md-4 mb-4">
+        <div class="card border-0 text-center shadow-sm h-100">
+          <div class="card-body p-4">
+            <h3 class="h4 mb-3">Achat & Vente</h3>
+            <p class="text-muted">Nous vous accompagnons dans toutes les étapes de votre projet d'achat ou de vente immobilière.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-4">
+        <div class="card border-0 text-center shadow-sm h-100">
+          <div class="card-body p-4">
+            <h3 class="h4 mb-3">Location</h3>
+            <p class="text-muted">Trouvez le logement idéal à louer ou confiez-nous la gestion de votre bien en toute sérénité.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4 mb-4">
+        <div class="card border-0 text-center shadow-sm h-100">
+          <div class="card-body p-4">
+            <h3 class="h4 mb-3">Estimation</h3>
+            <p class="text-muted">Bénéficiez d'une estimation gratuite et précise de votre bien immobilier par nos experts.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Testimonial Section -->
+  <div class="bg-light py-5">
+    <div class="container">
+      <h2 class="display-6 text-center mb-5 position-relative pb-2">
+        Ils nous font confiance
+        <span class="position-absolute start-50 bottom-0 translate-middle-x bg-primary" style="height: 4px; width: 80px;"></span>
+      </h2>
+
+      <div class="row">
+        <div class="col-md-4 mb-4">
+          <div class="card h-100 shadow-sm">
+            <div class="card-body p-4">
+              <div class="mb-3 text-warning">
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+              </div>
+              <p class="card-text fst-italic">"Service impeccable et grande réactivité. Notre agent a été à l'écoute et très professionnel tout au long de notre recherche."</p>
+              <div class="d-flex align-items-center mt-4">
+                <div class="flex-shrink-0">
+                  <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                    <span class="fw-bold">ML</span>
+                  </div>
+                </div>
+                <div class="flex-grow-1 ms-3">
+                  <h5 class="mb-0">Marie Leroy</h5>
+                  <small class="text-muted">Achat d'une maison</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+          <div class="card h-100 shadow-sm">
+            <div class="card-body p-4">
+              <div class="mb-3 text-warning">
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-half"></i>
+              </div>
+              <p class="card-text fst-italic">"Excellente estimation de mon appartement qui a trouvé preneur en moins de 3 semaines. Je recommande vivement cette agence."</p>
+              <div class="d-flex align-items-center mt-4">
+                <div class="flex-shrink-0">
+                  <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                    <span class="fw-bold">TD</span>
+                  </div>
+                </div>
+                <div class="flex-grow-1 ms-3">
+                  <h5 class="mb-0">Thomas Dubois</h5>
+                  <small class="text-muted">Vente d'un appartement</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+          <div class="card h-100 shadow-sm">
+            <div class="card-body p-4">
+              <div class="mb-3 text-warning">
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+              </div>
+              <p class="card-text fst-italic">"Accompagnement personnalisé et de qualité pour la location de notre maison. Des conseils judicieux et un suivi irréprochable."</p>
+              <div class="d-flex align-items-center mt-4">
+                <div class="flex-shrink-0">
+                  <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                    <span class="fw-bold">SF</span>
+                  </div>
+                </div>
+                <div class="flex-grow-1 ms-3">
+                  <h5 class="mb-0">Sophie Fournier</h5>
+                  <small class="text-muted">Location d'une maison</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<div class="text-center mt-4">
-  <a routerLink="/annonces" class="btn btn-outline-primary">Voir toutes les annonces</a>
-</div>
-
-<div class="mt-5">
-  <h2>Rechercher un bien</h2>
-  <p>Utilisez notre outil de recherche pour trouver le bien immobilier qui correspond à vos critères.</p>
-  <a routerLink="/recherche" class="btn btn-secondary">Recherche avancée</a>
-</div>
+<!-- Custom CSS -->
+<style>
+  .hover-effect {
+    transition: transform 0.3s ease;
+  }
+  .hover-effect:hover {
+    transform: translateY(-5px);
+  }
+  .icon-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: rgba(13, 110, 253, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>
