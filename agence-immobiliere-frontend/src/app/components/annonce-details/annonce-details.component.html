@@ -34,7 +34,7 @@
             <div *ngFor="let photo of annonce.photos; let i = index"
                  class="carousel-item"
                  [ngClass]="{'active': i === 0}">
-              <img [src]="photo" class="d-block w-100" alt="Property photo" style="height: 400px; object-fit: cover;">
+              <img [src]="photo.url" class="d-block w-100" alt="Property photo" style="height: 400px; object-fit: cover;">
             </div>
           </div>
 
@@ -63,7 +63,7 @@
         <!-- Thumbnail navigation -->
         <div class="row mt-2">
           <div *ngFor="let photo of annonce.photos; let i = index" class="col-md-2 mb-2">
-            <img [src]="photo"
+            <img [src]="photo.url"
                  class="img-thumbnail"
                  alt="Thumbnail"
                  style="height: 80px; object-fit: cover; cursor: pointer;"

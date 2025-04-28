@@ -20,7 +20,7 @@
 <div class="row row-cols-1 row-cols-md-3 g-4">
   <div class="col" *ngFor="let annonce of annoncesFiltrees">
     <div class="card h-100">
-      <img *ngIf="annonce.photos && annonce.photos.length" [src]="annonce.photos[0]" class="card-img-top" alt="Photo du bien" style="height: 200px; object-fit: cover;">
+      <img *ngIf="annonce.photos && annonce.photos.length" [src]="annonce.photos[0].url" class="card-img-top" alt="Photo du bien" style="height: 200px; object-fit: cover;">
       <div class="card-body">
         <h5 class="card-title">{{ annonce.titre }}</h5>
         <p class="card-text">
