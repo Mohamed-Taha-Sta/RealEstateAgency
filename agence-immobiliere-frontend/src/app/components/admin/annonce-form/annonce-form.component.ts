@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AnnonceService } from '../../../services/annonce.service';
-import { Annonce } from '../../../models/annonce';
+import { Annonce, PhotoInfo } from '../../../models/annonce';
 import { PhotoService } from '../../../services/photo.service';
-import {firstValueFrom} from "rxjs"; // We'll create this service next
+import { firstValueFrom } from "rxjs";
 
 @Component({
   selector: 'app-annonce-form',
@@ -19,8 +19,8 @@ export class AnnonceFormComponent implements OnInit {
   annonceId?: number;
 
   selectedFiles: File[] = [];
-  existingPhotos: string[] = [];
-  photosToDelete: string[] = [];
+  existingPhotos: PhotoInfo[] = [];
+  photosToDelete: number[] = [];
 
   categoriesOptions = ['appartement', 'maison', 'terrain', 'commerce'];
   typesOptions = ['vente', 'location'];
@@ -69,8 +69,9 @@ export class AnnonceFormComponent implements OnInit {
         contact: annonce.contact
       });
 
-      // Save existing photos
+      // Save existing photos with their IDs
       this.existingPhotos = annonce.photos || [];
+      console.log('Loaded existing photos:', this.existingPhotos);
 
       // Update form validation based on category
       this.onCategorieChange();
@@ -91,9 +92,13 @@ export class AnnonceFormComponent implements OnInit {
   }
 
   removeExistingPhoto(index: number): void {
-    // Store the URL to delete later
-    const photoUrl = this.existingPhotos[index];
-    this.photosToDelete.push(photoUrl);
+    const photo = this.existingPhotos[index];
+
+    // Add to photosToDelete if it has an ID
+    if (photo.id) {
+      this.photosToDelete.push(photo.id);
+      console.log(`Added photo ID ${photo.id} to deletion list`);
+    }
 
     // Remove from display
     this.existingPhotos.splice(index, 1);
@@ -128,21 +133,25 @@ export class AnnonceFormComponent implements OnInit {
       // 2. Upload new photos if any
       if (this.selectedFiles.length > 0 && savedAnnonce && savedAnnonce.id) {
         for (let i = 0; i < this.selectedFiles.length; i++) {
-          await this.photoService.uploadPhoto(
+          await firstValueFrom(this.photoService.uploadPhoto(
             this.selectedFiles[i],
             savedAnnonce.id,
             i + this.existingPhotos.length
-          ).toPromise();
+          ));
         }
       }
 
       // 3. Delete photos if any marked for deletion
       if (this.photosToDelete.length > 0) {
-        for (const photoUrl of this.photosToDelete) {
-          // Extract the ID from the URL
-          const photoId = this.extractPhotoIdFromUrl(photoUrl);
-          if (photoId) {
-            await this.photoService.deletePhoto(photoId).toPromise();
+        console.log(`Deleting ${this.photosToDelete.length} photos:`, this.photosToDelete);
+
+        for (const photoId of this.photosToDelete) {
+          try {
+            await firstValueFrom(this.photoService.deletePhoto(photoId));
+            console.log(`Successfully deleted photo with ID: ${photoId}`);
+          } catch (error) {
+            console.error(`Error deleting photo ID ${photoId}:`, error);
+            // Continue with other photos even if one fails
           }
         }
       }
@@ -153,16 +162,6 @@ export class AnnonceFormComponent implements OnInit {
     } finally {
       this.loading = false;
     }
-  }
-
-  extractPhotoIdFromUrl(url: string): number | null {
-    // This assumes your photo URLs contain the photo ID
-    // You'll need to adjust based on your actual URL structure
-    const match = url.match(/\/api\/photos\/download\/(.+)$/);
-    if (match && match[1]) {
-      return parseInt(match[1], 10);
-    }
-    return null;
   }
 
   onCategorieChange(): void {

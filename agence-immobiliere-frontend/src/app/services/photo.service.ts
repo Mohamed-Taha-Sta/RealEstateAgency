@@ -37,9 +37,10 @@ export class PhotoService {
     return this.http.get<any[]>(`${this.apiUrl}/property/${propertyId}`);
   }
 
-  // Delete a photo
+  // Delete a photo by ID
   deletePhoto(photoId: number): Observable<void> {
     const options = { headers: this.getHeaders() };
+    console.log(`Sending DELETE request to ${this.apiUrl}/${photoId}`);
     return this.http.delete<void>(`${this.apiUrl}/${photoId}`, options);
   }
 }

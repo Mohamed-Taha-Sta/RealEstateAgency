@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Annonce } from '../models/annonce';
+import { Annonce, PhotoInfo } from '../models/annonce';
 import { map } from 'rxjs/operators';
 
 @Injectable({
@@ -54,6 +54,7 @@ export class AnnonceService {
       map(property => this.mapPropertyToAnnonce(property))
     );
   }
+
   // Update a property (requires admin authentication)
   updateAnnonce(annonce: Annonce): Observable<Annonce> {
     const propertyDTO = this.mapAnnonceToProperty(annonce);
@@ -80,7 +81,6 @@ export class AnnonceService {
 
   // Map backend PropertyDTO to frontend Annonce
   private mapPropertyToAnnonce(property: any): Annonce {
-
     return {
       id: property.id,
       titre: property.title,
@@ -91,13 +91,16 @@ export class AnnonceService {
       localisation: property.location,
       prix: property.price,
       description: property.description,
-      photos: property.photos?.map((photo: any) => photo.url) || [],
+      photos: property.photos?.map((photo: any) => ({
+        id: photo.id,
+        url: photo.url
+      })) || [],
       contact: property.contact,
       datePublication: new Date(property.publicationDate)
     };
   }
 
-// Update the mapAnnonceToProperty method in annonce.service.ts
+  // Update the mapAnnonceToProperty method
   private mapAnnonceToProperty(annonce: Annonce): any {
     const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
@@ -128,6 +131,7 @@ export class AnnonceService {
     console.log('Mapped property DTO:', propertyDTO);
     return propertyDTO;
   }
+
   // Map an array of properties to an array of annonces
   private mapPropertiesToAnnonces(properties: any[]): Annonce[] {
     return properties.map(property => this.mapPropertyToAnnonce(property));

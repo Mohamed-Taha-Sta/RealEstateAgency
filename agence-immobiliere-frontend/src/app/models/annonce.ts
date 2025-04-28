@@ -8,7 +8,12 @@ export interface Annonce {
   localisation: string;
   prix: number;
   description: string;
-  photos?: string[];
+  photos?: PhotoInfo[];
   contact: string;
   datePublication: Date;
+}
+
+export interface PhotoInfo {
+  id: number;
+  url: string;
 }
